@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword } from '@firebase/auth';
-import { addDoc, collection, doc, getDoc, getDocFromCache, setDoc, updateDoc } from '@firebase/firestore';
+import { addDoc, collection, doc, DocumentData, getDoc, getDocFromCache, setDoc, updateDoc } from '@firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, ScrollView, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -11,6 +11,22 @@ import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
 SplashScreen.preventAutoHideAsync();
+
+interface ISWeekText {
+    curDate?: boolean;
+    curMonth?: boolean;
+    curSelect?: boolean;
+}
+
+interface ISWeekItem {
+    itemWidth: number;
+}
+
+interface IDateDate {
+    id: string;
+    date: number;
+    text: number;
+}
 
 const Text = styled.Text`
 `;
@@ -24,31 +40,31 @@ const SWeek = styled.View`
     justify-content: center;
 `;
 
-const SWeekItem = styled.View`
+const SWeekItem = styled.View<ISWeekItem>`
     background: red;
     width: ${props => props.itemWidth}px;
     
 `;
 
-const SWeekText = styled.Text`
+const SWeekText = styled.Text<ISWeekText>`
     text-align: center;
     color: ${props => props.curDate ? 'blue' : props.curMonth ? '#fff' : '#aaa'};
     background: ${props => props.curSelect ? 'green' : 'red'};
 `;
 
-const dateDate = [
+const dateDate:IDateDate[] = [
     {
-        id:1,
+        id:'1',
         date:1,
         text:1
     },
     {
-        id:2,
+        id:'2',
         date:2,
         text:2
     },
     {
-        id:3,
+        id:'3',
         date:3,
         text:3
     }
@@ -64,7 +80,9 @@ const renderItem = ({item:{id, date, text}}) => {
 
 const WeekArray = ['일', '월', '화', '수', '목', '금', '토'];
 
-
+interface IUserInfo {
+    test: string;
+}
 
 export default function Home({navigation:{navigate, setOptions}}) {
     const [appIsReady, setAppIsReady] = useState(false);
@@ -77,7 +95,7 @@ export default function Home({navigation:{navigate, setOptions}}) {
     const [userDiary, setUserDiary] = useState({});
     const [userId, setUserId] = useState('');
     const [login, setLogin] = useRecoilState(loginState);
-    const [userInfo, setUserInfo] = useState();
+    const [userInfo, setUserInfo] = useState<IUserInfo | DocumentData | null>();
 
     
 
@@ -116,7 +134,7 @@ export default function Home({navigation:{navigate, setOptions}}) {
     const testRef = doc(fireStoreDB, 'diary', `${calender.today}`);
 
     const addFireStore = async(date) => {
-        const prevDiary = await (await getDoc(testRef, 'diary', `${calender.today}`)).data().diary;
+        const prevDiary = await (await getDoc(testRef)).data().diary;
         try {
             await updateDoc(testRef, {
                 diary: [...prevDiary,
@@ -188,8 +206,9 @@ export default function Home({navigation:{navigate, setOptions}}) {
         const getUserInfo = async () => {
             const docRef = doc(fireStoreDB, 'users', userId);
             const docSnap = await getDoc(docRef);
+            const docData = docSnap.data();
             console.log(docSnap.data());
-            setUserInfo(prev => prev = docSnap.data());
+            setUserInfo(prev => prev = docData);
         }
         getUserInfo();
 
@@ -273,7 +292,12 @@ export default function Home({navigation:{navigate, setOptions}}) {
             {
                 calender?.calenderArray?.map((item, index) => (
                     <SWeekItem key={index} itemWidth={Math.floor(width/7)}>
-                        <SWeekText onPress={() => setSelectDate(item)} curSelect={item === selectDate} curDate={item === calender.today} curMonth={new Date(item).getMonth() === calender.month}>
+                        <SWeekText
+                            onPress={() => setSelectDate(item)}
+                            curSelect={item === selectDate}
+                            curDate={item === calender.today}
+                            curMonth={new Date(item).getMonth() === calender.month}
+                        >
                             {new Date(item).getDate()}
                         </SWeekText>
                         <Text>
@@ -316,7 +340,7 @@ export default function Home({navigation:{navigate, setOptions}}) {
                 ListHeaderComponent={defaultItem}
                 data={dateDate}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={(item) => item.id}
             />
         </View>
     )

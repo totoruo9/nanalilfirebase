@@ -1,0 +1,15 @@
+{
+    "extends": "expo/tsconfig.base",
+    "compilerOptions": {
+        "plugins": [
+            {
+                "transform": "typescript-plugin-styled-components",
+                "type": "config",
+
+                // other typescript-plugin-styled-components options can be added here
+                "minify": true,
+                "ssr": true
+            }
+        ]
+    }
+}

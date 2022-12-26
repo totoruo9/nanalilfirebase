@@ -1,16 +1,17 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import {API_KEY, AUTH_DOMAIN, DATEBASE_URL, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDRER_ID, APP_ID, MEASUREMENT_ID} from '@env';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAByG9pFlnUX9Yyqpw1ytDYWDd1rEsXRyA',
-  authDomain: 'nanalil.firebaseapp.com',
-  databaseURL: 'https://nanalil.firebaseio.com',
-  projectId: 'nanalil',
-  storageBucket: 'nanalil.appspot.com',
-  messagingSenderId: '854732109100',
-  appId: '1:854732109100:web:70878a130e1a247c7ce889',
-  measurementId: 'G-E4D3QBTWDW',
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  databaseURL: DATEBASE_URL,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDRER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
