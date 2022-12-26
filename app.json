@@ -5,7 +5,12 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5fc70a06-9f44-41cc-b906-f7558a5ebee5"
+      }
+    }
   },
   "name": "nanalilfire"
 }
